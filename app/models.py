@@ -1,0 +1,23 @@
+from datetime import datetime, timezone
+
+from sqlalchemy import DateTime, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.database import Base
+
+
+class RequestLog(Base):
+    __tablename__ = "request_logs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+    )
+    model: Mapped[str] = mapped_column(String(80))
+    prompt_chars: Mapped[int]
+    input_tokens: Mapped[int | None]
+    output_tokens: Mapped[int | None]
+    latency_ms: Mapped[float]
+    status_code: Mapped[int]
+    error_type: Mapped[str | None] = mapped_column(String(80))
