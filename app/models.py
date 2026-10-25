@@ -22,6 +22,8 @@ class RequestLog(Base):
     status_code: Mapped[int]
     error_type: Mapped[str | None] = mapped_column(String(80))
     user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    cache_hit: Mapped[bool] = mapped_column(default=False)
+    request_id: Mapped[str | None] = mapped_column(String(36))
 
 
 class User(Base):

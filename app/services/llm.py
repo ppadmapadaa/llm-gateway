@@ -1,13 +1,25 @@
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
+
 
 load_dotenv()
 
 MODEL = "gemini-3.5-flash-lite"
 
+RETRY_OPTIONS = types.HttpRetryOptions(
+    attempts=2,
+    initial_delay=1,
+    max_delay=1,
+    http_status_codes=[408, 429, 500, 502, 503, 504],
+)
+
 
 def generate_answer(prompt: str, temperature: float) -> tuple[str, int | None, int | None]:
-    client = genai.Client()
+    client = genai.Client(
+        http_options=types.HttpOptions(retry_options=RETRY_OPTIONS)
+    )
+
     interaction = client.interactions.create(
         model=MODEL,
         input=prompt,
